@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fugaz+One&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+TC:wght@100..900&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      padding: 0;
+      margin: 0;
+    }
+    .fugaz-one-regular {
+      font-family: "Fugaz One", sans-serif;
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    #container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 90vh;
+      width: 100vw;
+      overflow: hidden;
+      margin: auto;
+    }
+
+    #text {
+      text-align: left;
+      width: 85%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      z-index: 0;
+      font-size: calc(19vw);
+      white-space: nowrap;
+      color: rgba(255, 255, 255, 0.3);
+      margin: 0;
+      visibility: hidden;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    #startButton {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.5rem;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: all 0.5s ease;
+    }
+
+    #startButton.top {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.2rem;
+      padding: 8px 16px;
+      background: #000;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    :root {
+      --accent: hsl(360, 80%, 50%);
+      --accent-darken-12: hsl(360, 80%, 38%);
+      --accent-darken-20: hsl(360, 80%, 30%);
+      --accent-lighten-20: hsl(360, 80%, 70%);
+    }
+
+    .rnOuter {
+      background: var(--accent-darken-12);
+      overflow: hidden;
+      position: relative;
+      height: 100vh;
+    }
+
+    .rnInner {
+      width: 100%;
+      position: absolute;
+      top: -10%;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      margin: auto;
+      transform-style: preserve-3d;
+      transition: transform 6s ease;
+      transform-origin: -120% top;
+    }
+
+    .rnUnit {
+      width: 15vw;
+      height: 120vh;
+      background: repeating-linear-gradient(to left,
+          var(--accent) 4vw,
+          var(--accent-darken-20) 8vw,
+          var(--accent-lighten-20) 10vw);
+      background-size: 100% 100%;
+      display: inline-block;
+      transform-origin: 0 0%;
+      transform: rotate(3deg);
+      animation: rnUnit 2s ease infinite;
+    }
+
+    @keyframes rnUnit {
+      50% {
+        transform: rotate(-3deg);
+      }
+    }
+
+    /* 為每個 rnUnit 添加不同的動畫延遲 */
+    .rnUnit:nth-child(1) {
+      animation-delay: -0.1s;
+    }
+
+    .rnUnit:nth-child(2) {
+      animation-delay: -0.2s;
+    }
+
+    .rnUnit:nth-child(3) {
+      animation-delay: -0.3s;
+    }
+
+    .rnUnit:nth-child(4) {
+      animation-delay: -0.4s;
+    }
+
+    .rnUnit:nth-child(5) {
+      animation-delay: -0.5s;
+    }
+
+    .rnUnit:nth-child(6) {
+      animation-delay: -0.6s;
+    }
+
+    .rnUnit:nth-child(7) {
+      animation-delay: -0.7s;
+    }
+
+    .rnUnit:nth-child(8) {
+      animation-delay: -0.8s;
+    }
+
+    .rnUnit:nth-child(9) {
+      animation-delay: -0.9s;
+    }
+
+    .rnUnit:nth-child(10) {
+      animation-delay: -1s;
+    }
+
+    .aoTable {
+      width: 100%;
+      height: 100vh;
+      text-align: center;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .rnOuter:hover .rnInner {
+      transform-origin: -120% top;
+      transform: scaleX(3);
+    }
+
+    #clock {
+      width: 300px;
+      height: 300px;
+      background: url(./img/clockFace.png) no-repeat center center fixed;
+      opacity: 0.5;
+      box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+      border-radius: 50%;
+      position: relative;
+      transition: transform 0.1s ease;
+      transform-style: preserve-3d;
+      will-change: transform;
+      visibility: hidden;
+      /* 初始隱藏，但在 DOM 中存在 */
+      opacity: 0;
+      perspective: 800px;
+    }
+
+    @keyframes clockAnimation {
+      0% {
+        transform: translateY(100vh) rotateY(0deg) scale(90%);
+        /* 初始狀態：沿Y軸旋轉 0 度 */
+        opacity: 0;
+      }
+
+      60% {
+        transform: translateY(-200px) rotateY(1080deg) rotateX(30deg) scale(120%);
+        /* 沿Y軸旋轉 3 圈 */
+        opacity: 1;
+      }
+
+      80% {
+        transform: translateY(10px) rotateY(1080deg) rotateX(-30deg) scale(110%);
+        opacity: 1;
+      }
+
+      87% {
+        transform: translateY(-5px) rotateY(1080deg) rotateX(10deg) scale(100%);
+        /* 減小彈跳高度 */
+        opacity: 1;
+      }
+
+      95% {
+        transform: translateY(5px) rotateY(1080deg) rotateX(-10deg) scale(98%);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(0) rotateY(1080deg) rotateX(0deg);
+        /* 回到原位 */
+        opacity: 1;
+      }
+
+    }
+
+    @keyframes float {
+      0% {
+        dropshadow: 0 5px 15px 0px rgba(0, 0, 0, 0.6);
+        transform: translate(-50%, -50%);
+      }
+
+      50% {
+        dropshadow: 0 25px 15px 0px rgba(0, 0, 0, 0.2);
+        transform: translate(-50%, -55%);
+      }
+
+      100% {
+        dropshadow: 0 5px 15px 0px rgba(0, 0, 0, 0.6);
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    .show {
+      visibility: visible;
+      opacity: 1;
+      animation: clockAnimation 3s cubic-bezier(0.42, 0, 0.58, 1);
+    }
+
+    /* Slight parallax effect on hover */
+    #clock:hover .content {
+      transform: rotate3D(1, 1, 0, 2deg) translateZ(15px);
+    }
+
+    .content {
+      width: 300px;
+      height: 300px;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.3s ease;
+    }
+
+    #hour {
+      width: 20%;
+      /* 粗細 */
+      height: 28px;
+      /* background-color: blue; */
+      background-image: url(./img/h_hand.png);
+      border-radius: 5px;
+      position: absolute;
+      left: 30%;
+      /* 減去他粗細的一半，讓中心在圓心 */
+      top: calc(50% - 5px);
+      transform-origin: right center;
+      transform: rotate(0deg);
+    }
+
+    #minute {
+      width: 30%;
+      height: 18px;
+      background-image: url(./img/m_hand.png);
+      position: absolute;
+      left: 20%;
+      top: calc(50% - 4px);
+      transform-origin: right center;
+      transform: rotate(0deg);
+    }
+
+    #second {
+      width: 45%;
+      height: 12px;
+      background-image: url(./img/s_hand.png);
+      border-radius: 5px;
+      position: absolute;
+      left: 5%;
+      /* 減去他粗細的一半，讓中心在圓心 */
+      top: calc(50% - 2px);
+      transform-origin: right center;
+      transform: rotate(0deg);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="rxWorld">
+    <section class="rnOuter ">
+      <div class="aoTable">
+        <button id="startButton">現在幾點？</button>
+        <div id="text" class="fugaz-one-regular">00:00:00</div>
+        <div id="container">
+          <div id="clock">
+            <div class="content">
+              <div id="hour"></div>
+              <div id="minute"></div>
+              <div id="second"></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class='rnInner'>
+            <div class='rnUnit'></div>
+            <div class='rnUnit'></div>
+            <div class='rnUnit'></div>
+            <div class='rnUnit'></div>
+            <div class='rnUnit'></div>
+            <div class='rnUnit'></div>
+            <div class='rnUnit'></div>
+            <div class='rnUnit'></div>
+            <div class='rnUnit'></div>
+            <div class='rnUnit'></div>
+            <div class='rnUnit'></div>
+          </div>
+    </section>
+  </div>
+  <script>
+    const button = document.getElementById('startButton');
+    const elClock = document.getElementById('clock');
+    const elText = document.getElementById('text')
+
+    button.addEventListener("click", function () {
+      button.style.display = "none";
+      elClock.style.visibility = 'visible';
+      elText.style.visibility = 'hidden';
+      elClock.style.opacity = '1';
+      // 加動畫 class 
+      elClock.classList.add('show');
+
+      setTimeout(() => {
+        button.style.display = "block";
+        button.classList.add("top");
+      }, 500);
+
+      // 當動畫結束後，移除動畫 class，顯示文字
+      elClock.addEventListener('animationend', () => {
+        elClock.classList.remove('show');
+        elText.style.visibility = 'visible';
+      });
+    });
+
+    // threshold 變數 用來控制旋轉的幅度或範圍
+    const THRESHOLD = 30;
+    const elHour = document.getElementById('hour')
+    const elMinute = document.getElementById('minute')
+    const elSecond = document.getElementById('second')
+
+    const clock = () => {
+      const date = new Date()
+      const h = date.getHours()
+      const m = date.getMinutes()
+      const s = date.getSeconds()
+      elHour.style.transform = `rotateZ(${h * 30 + (m / 59 * 30) + 90}deg) rotateX(0deg)`
+      elMinute.style.transform = `rotateZ(${m * 6 + 90}deg) rotateX(0deg)`
+      elSecond.style.transform = `rotateZ(${s * 6 + 90}deg) rotateX(0deg)`
+      elText.innerText = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
+      // padStart 是要幫時鐘數字補上零啦
+    }
+
+    // 搖來搖去假視差
+    elClock.addEventListener("mousemove", handleHover);
+    elClock.addEventListener("mouseleave", resetStyles);
+
+    function handleHover(e) {
+      const { clientX, clientY, currentTarget } = e;
+      const { clientWidth, clientHeight, offsetLeft, offsetTop } = currentTarget;
+      // 計算滑鼠在水平和垂直方向的相對位置（範圍 0 到 1）
+      const horizontal = (clientX - offsetLeft) / clientWidth;
+      const vertical = (clientY - offsetTop) / clientHeight;
+      // 將滑鼠的相對位置線性映射到 -THRESHOLD 到 THRESHOLD 的範圍
+      // const rotateX = (THRESHOLD / 2 - horizontal * THRESHOLD).toFixed(2); 
+      // const rotateY = (horizontal * THRESHOLD - THRESHOLD / 2).toFixed(2); 
+      const rotateX = (THRESHOLD * (0.5 - vertical)).toFixed(2); // 垂直方向: 中心點為 0
+      const rotateY = (THRESHOLD * (horizontal - 0.5)).toFixed(2); // 水平方向: 中心點為 0
+      elClock.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    }
+
+    function resetStyles(e) {
+      elClock.style.transform =
+        `perspective(${e.currentTarget.clientWidth}px) rotateX(0deg) rotateY(0deg)`;
+    }
+    setInterval(clock, 1000)
+  </script>
+</body>
+
+</html>
